@@ -1,0 +1,66 @@
+body{
+    background-color: black;
+    color: white;
+}
+i{
+    /* color: white; */
+    
+}
+.fa-house-laptop{
+    font-size: 4em;
+}
+.areaName{
+    font-size: 30px;
+    /* font-weight: bold; */
+}
+.col-md-3 {
+    cursor: pointer;
+}
+
+
+#serImg{
+    border-radius: 2%;
+}
+#search_container{
+    position: relative;
+    margin-top: 4%;
+    overflow: hidden;
+}
+#se{
+   position:relative;
+   overflow: hidden;
+   margin-top: 2%;
+   cursor: pointer;
+}
+.layerName{
+position: absolute;
+top: 100%;
+background-color: rgba(201, 225, 225,.7);
+color: black;
+height: 100%;
+border-radius: 2%;
+width: 93%;
+transition: .5s;
+
+}
+#se:hover .layerName{
+    top: 0%;
+}
+
+.name{
+    top: 30%;
+    left: 10%;
+    position: absolute;
+   font-size: 30px;
+}
+.tags{
+    height: 35px;
+    background-color: #b6effb;
+    color: black;
+    text-align: center;
+    padding: 5px;
+}
+a{
+ text-decoration: none;
+ color: white;
+}

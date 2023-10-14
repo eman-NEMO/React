@@ -1,0 +1,180 @@
+let rowData = document.getElementById("rowData");
+let searchContainer = document.getElementById("searchContainer");
+let submitBtn;
+
+$(document).ready(() => {
+    searchByName("").then(() => {
+        $(".loading-screen").fadeOut(500)
+        $("body").css("overflow", "visible")
+
+    })
+})
+
+async function searchByName(s) {
+  fetchData();
+}
+
+// Select the loader element
+
+
+function openSideNav() {
+    $(".side-nav-menu").animate({
+        left: 0
+    }, 500)
+
+
+    $(".open-close-icon").removeClass("fa-align-justify");
+    $(".open-close-icon").addClass("fa-x");
+
+
+    for (let i = 0; i < 5; i++) {
+        $(".links li").eq(i).animate({
+            top: 0
+        }, (i + 5) * 100)
+    }
+}
+
+function closeSideNav() {
+    let boxWidth = $(".side-nav-menu .nav-tab").outerWidth()
+    $(".side-nav-menu").animate({
+        left: -boxWidth
+    }, 500)
+
+    $(".open-close-icon").addClass("fa-align-justify");
+    $(".open-close-icon").removeClass("fa-x");
+
+
+    $(".links li").animate({
+        top: 300
+    }, 500)
+}
+
+closeSideNav()
+$(".side-nav-menu i.open-close-icon").click(() => {
+    if ($(".side-nav-menu").css("left") == "0px") {
+        closeSideNav()
+    } else {
+        openSideNav()
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+async function fetchData(){
+    let response = await fetch(`https://www.themealdb.com/api/json/v1/1/list.php?a=list`)
+    response = await response.json()
+    console.log(response.meals)
+    displayAreas(response.meals)
+};
+
+function displayAreas(area){
+   var cartoona=``
+   for(var i=0;i<area.length;i++){
+    cartoona+=`<div class="var col-md-3 text-center mt-4" data-category="${area[i].strArea}">
+    <i class="fa-solid fa-house-laptop fa-4x"></i>
+    <h3 class="areaName">${area[i].strArea}</h3>
+    </div>`
+   }
+   document.getElementById('row').innerHTML=cartoona
+
+   $('.col-md-3').click(function(e){
+    var areaMeals = e.currentTarget.getAttribute("data-category");
+      fetchAreaMeals(areaMeals)
+   })
+}
+
+ async function fetchAreaMeals(areaMeals){
+   let response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${areaMeals}`)
+   response = await response.json()
+   display(response.meals)
+//   displayAreas(response.meals)
+}
+function display(meals){
+   var cartoona2 = ``;
+   for (var i = 0; i < meals.length; i++) {
+       cartoona2 += ` 
+          <div class="col-md-3 mb-3" id="se">
+          <img src="${meals[i].strMealThumb}" alt="" class="w-100  " id="serImg">
+          <div class="layerName" id=${meals[i].idMeal}>
+             <div class="  d-flex justify-content-center align-content-center"> <p class="name">${meals[i].strMeal}</p></div>
+           </div>
+           
+       </div>
+        `;
+     }
+     document.getElementById("row").innerHTML = cartoona2;
+ 
+     $(".layerName").click((e) => {
+      fetchDataId(e.target.id)
+      // showDetails(e.target.id);
+     });
+   }
+ 
+   async function fetchDataId(categoryId){
+      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${categoryId}`)
+      response = await response.json()
+      console.log(response.meals)
+      showDetails(response.meals)
+   }
+
+
+   function showDetails(searchByNameArr) {
+      console.log('okk')
+      var cartoona = ``;
+      cartoona += `
+        
+        <div class="col-md-4">
+        <img src="${searchByNameArr[0].strMealThumb}" alt="" class="w-100">
+        <h2>${searchByNameArr[0].strMeal}</h2>
+    </div>
+    
+    <div class="col-md-8 ">
+        <h2 class="text-center">Instructions</h2>
+        <p>${searchByNameArr[0].strInstructions}</p>
+    
+        <h2>Area: ${searchByNameArr[0].strArea}</h2>  
+        <h2>Category:${searchByNameArr[0].strCategory} </h2>  
+        <h2>Recipes :</h2>
+        <div class=" d-flex flex-wrap"> 
+        `
+    
+        for (var i = 1; i <= 20; i++) {
+          var str="strMeasure" + (i)
+          var value = searchByNameArr[0][str];
+          if (value && value.trim() !== "") {
+            console.log(searchByNameArr[0][str])
+            cartoona += `
+              <div class="tags rounded-2 m-3">${searchByNameArr[0][str]}</div>
+            `;
+          }
+        }
+      cartoona+=`</div>
+      <div class="youtube">
+      <h2>tags</h2>
+      `
+      if(searchByNameArr[0].strTags){
+        cartoona+=`
+        <p>${searchByNameArr[0].strTags}</p>
+      `
+      }
+     cartoona+=`
+     <button class="btn btn-success"><a href="${searchByNameArr[0].strSource}" target="_blank">Source</a></button>
+     <button class="btn btn-danger"><a href="${searchByNameArr[0].strYoutube}" target="_blank">Youtube</a></button>
+     </div>
+     </div>
+     `
+        
+     document.getElementById('row').innerHTML=cartoona   
+     document.getElementsByClassName('row').innerHTML=` `
+        
+    }
+    
